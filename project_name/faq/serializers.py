@@ -7,6 +7,8 @@ from .models import Support, Feedback, FeedbackBase
 
 
 class SupportSerializer(serializers.ModelSerializer):
+    question = serializers.CharField(required=False)
+    answer = serializers.CharField(required=False)
 
     class Meta:
         model = Support

@@ -1,8 +1,15 @@
+import binascii
+import os
+from datetime import datetime,timedelta
+
 from django.contrib.auth.models import AbstractUser, UserManager, PermissionsMixin
 from django.db import models
 
 
 # user
+from project_name.config import settings
+
+
 class User(AbstractUser):
 
     """
@@ -42,9 +49,55 @@ class User(AbstractUser):
 
 
 class Captcha(models.Model):
+    TYPE_CHOICE = (
+        ('0', "web"),
+        ('1', "app"),
+        ('2', "device")
+    )
     captcha = models.CharField(max_length=6)
-    c_type = models.IntegerField(verbose_name="captcha type")
+    c_type = models.CharField(max_length=1, verbose_name="captcha type", choices=TYPE_CHOICE)
     # 默认手机号
-    account = models.CharField(max_length=16, verbose_name="cellphone")
+    account = models.CharField(max_length=16, blank=True, null=True)
+    app_id = models.CharField(max_length=32, blank=True, null=True)
     create_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now=True)
+    expire_at = models.DateTimeField()
+
+    class Meta:
+        db_table = 'captcha'
+
+
+class WebToken(models.Model):
+    """
+        The customize authorization token model.
+    """
+    access_token = models.CharField(max_length=40)
+    refresh_token = models.CharField(max_length=40)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, related_name='web_user_token',
+        on_delete=models.CASCADE
+    )
+    created = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.access_token:
+            self.access_token = self.generate_key()
+            self.refresh_token = self.generate_key()
+        return super(WebToken, self).save(*args, **kwargs)
+
+    def refresh(self):
+        self.access_token = self.generate_key()
+        self.created = datetime.now()
+        self.save(update_fields=['access_token', 'refresh_token', 'created'])
+
+    def at_is_expired(self):
+        return datetime.now() > self.created+timedelta(hours=1)
+
+    def rt_is_expired(self):
+        return datetime.now() > self.created+timedelta(hours=6)
+
+    @staticmethod
+    def generate_key():
+        return binascii.hexlify(os.urandom(20)).decode()
+
+    def __str__(self):
+        return self.access_token

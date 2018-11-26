@@ -60,3 +60,19 @@ class ServerError(APIException):
             "message": self.message
         }
         return payload
+
+
+class TokenAuthenticationFailed(APIException):
+    status_code = status.HTTP_200_OK
+    default_detail = 'Incorrect authentication credentials.'
+
+    def __init__(self, code=0, message=None):
+        if message is not None:
+            meta = {'code': code, 'message': message}
+        else:
+            meta = {'code': code, 'message': self.default_detail}
+        data = {}
+        self.detail = {'meta': meta, 'data': data}
+
+    def __str__(self):
+        return six.text_type(self.detail)
