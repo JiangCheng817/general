@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^faq/', include('project_name.faq.urls')),
     url(r'^account/', include('project_name.account.urls')),
+    url(r'^enduser/', include('project_name.enduser.urls')),
     url(r'^api-token-auth/', obtain_jwt_token),
 ]
