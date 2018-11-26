@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import datetime
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -31,15 +33,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-   'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'project_name.enduser',
     'project_name.faq',
-    'project_name.account'
+    'project_name.account',
+    'project_name.app',
+
 ]
 
 MIDDLEWARE = [
@@ -159,6 +163,7 @@ CACHES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'project_name.core.authentication.TokenAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
@@ -171,3 +176,11 @@ REST_FRAMEWORK = {
     ),
     'DATETIME_FORMAT': "%Y-%m-%dT%H:%M:%S"
 }
+
+# ================
+# = JWT settings =
+# ================
+
+JWT_AUTH = {'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+            'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=7 * 24 * 60 * 60)
+            }

@@ -29,10 +29,11 @@ class FeedbackSerializer(FeedbackBasicSerializer):
 
     class Meta:
         model = Feedback
+        fields = "__all__"
 
     def create(self, validated_data):
-        user = self.context["user"]
-        image = self.context["image"] or None
+        user = self.context["view"].kwargs['user']
+        image = self.context["view"].kwargs['image'] or None
         validated_data.update({
             "user": user,
             "image": image

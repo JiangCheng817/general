@@ -2,6 +2,9 @@ from django.db import models
 
 
 # 常见问题
+from project_name.enduser.models import EndUser
+
+
 class Support(models.Model):
     """
     常见问题(用户帮助)
@@ -31,7 +34,7 @@ class FeedbackBase(models.Model):
         (2, "hasn't been handled")
     )
     id = models.AutoField(primary_key=True)
-    content = models.TextField(blank=True, null=True,verbose_name="faq content")
+    content = models.TextField(blank=True, null=True, verbose_name="faq content")
     image = models.CharField(blank=True, null=True, verbose_name="image", max_length=150)
     status = models.SmallIntegerField(choices=FEEDBACK_HANDLE_STATUS, default=2, verbose_name="status")
     delete_flag = models.SmallIntegerField(default=0, verbose_name="delete flag")
@@ -40,14 +43,14 @@ class FeedbackBase(models.Model):
 
     class Meta:
         db_table = "feedback_base"
+        abstract = True
 
 
 # 用户反馈简单举例
 class Feedback(FeedbackBase):
-    ## @字段需补充完整
-
+    # @字段需补充完整
     # 一个简单的例子
-    # user = models.ForeignKey(EndUser, db_column="enduser_id", verbose_name="create_user")
-    # class Meta:
-    #     db_table = "feedback"
-    pass
+    user = models.ForeignKey(EndUser, on_delete=models.CASCADE, db_column="enduser_id", verbose_name="create_user")
+
+    class Meta:
+        db_table = "feedback"

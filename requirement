@@ -4,6 +4,6 @@ psycopg2==2.7.5
 psycopg2-binary==2.7.5
 django-redis==4.10.0
 django-cors-headers==2.4.0
-
+djangorestframework-jwt==1.11.0
 
 

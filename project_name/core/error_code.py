@@ -22,3 +22,4 @@ ERR_PASSWORD_ERROR = (10200, 'password error')
 
 # faq: 10250~10499
 ERR_SUPPORT_NOT_EXIST = (10250, 'support does not exist')
+ERR_FEEDBACK_NOT_EXIST = (10251, 'feedback does not exist')
